@@ -123,19 +123,36 @@ function getLearnerData(course, ag, submissions) {
         } 
 
          const percent = score / assignment.points_possible;
+
+         //if statement for learners dont exist
+
+         if (!learners[sub.learner_id]) {
+          learners[sub.learner_id] = {
+            id: sub.learner_id,
+            totalScore: 0,
+            totalPoints: 0
+          };
+        }
+
+        //assignment score
+        learners[sub.learner_id][assignment.id] = Number(percent.toFixed(3));
+        
+        learners[sub.learner_id].totalScore += score;
+        learners[sub.learner_id].totalPoints += assignment.points_possible;
+      }
  
  
     return result;
     } catch (error) {
       console.error("There was a problem:", error.message);
       return [];
-}
+    }
   }
 
 
-// const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-// console.log(result);
+console.log(result);
 
 
 
