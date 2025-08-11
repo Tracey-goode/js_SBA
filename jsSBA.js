@@ -77,10 +77,10 @@ const LearnerSubmissions = [
 ];
 
 function getLearnerData(course, ag, submissions) {
- try {
-      if (ag.course_id !== course.id) {
-        throw new Error("Assignment group does not match the course.");
-      }
+//  try {
+//       if (ag.course_id !== course.id) {
+//         throw new Error("Assignment group does not match the course.");
+//       }
 
       // Assignments due date
       const today = new Date();
@@ -140,15 +140,26 @@ function getLearnerData(course, ag, submissions) {
         learners[sub.learner_id].totalScore += score;
         learners[sub.learner_id].totalPoints += assignment.points_possible;
       }
+      //avgs, list objects
+        const result = [];
+      for (let learnerId in learners) {
+        const learner = learners[learnerId];
+        const avgScore = learner.totalScore / learner.totalPoints;
+  
+        const learnerResult = {
+          id: learner.id,
+          avg: Number(avgScore.toFixed(3))
+        };
+  
  
  
     return result;
-    } catch (error) {
-      console.error("There was a problem:", error.message);
-      return [];
-    }
+    // } catch (error) {
+    //   console.error("There was a problem:", error.message);
+    //   return [];
+    // }
   }
-
+ }
 
 const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
