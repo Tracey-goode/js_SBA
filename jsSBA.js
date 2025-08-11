@@ -77,25 +77,89 @@ const LearnerSubmissions = [
 ];
 
 function getLearnerData(course, ag, submissions) {
-  // here, we would process this data to achieve the desired result.
-  const result = [
-    {
-      id: 125,
-      avg: 0.985, // (47 + 150) / (50 + 150)
-      1: 0.94, // 47 / 50
-      2: 1.0 // 150 / 150
-    },
-    {
-      id: 132,
-      avg: 0.82, // (39 + 125) / (50 + 150)
-      1: 0.78, // 39 / 50
-      2: 0.833 // late: (140 - 15) / 150
-    }
-  ];
+ try {
+      if (ag.course_id !== course.id) {
+        throw new Error("Assignment group does not match the course.");
+      }
 
-  return result;
+      // Assignments due date
+      const today = new Date();
+      const validAssignments = [];
+      for (let i = 0; i < ag.assignments.length; i++) {
+        const assignment = ag.assignments[i];
+        const dueDate = new Date(assignment.due_at);
+  
+        if (dueDate <= today && assignment.points_possible > 0) {
+          validAssignments.push(assignment);
+        }
+      }
+
+      const assignmentMap = {};
+      for (let i = 0; i < validAssignments.length; i++) {
+        const a = validAssignments[i];
+        assignmentMap[a.id] = a;
+      }
+
+        const learners = {};
+  
+      for (let i = 0; i < submissions.length; i++) {
+        const sub = submissions[i];
+        const assignment = assignmentMap[sub.assignment_id];
+
+        if (!assignment) {
+          continue;
+        }
+  
+        const dueDate = new Date(assignment.due_at);
+        const submittedDate = new Date(sub.submission.submitted_at);
+
+        let score = sub.submission.score;
+        if (submittedDate > dueDate) {
+          score = score - (assignment.points_possible * 0.1);
+        }
+  
+        if (score < 0) {
+          score = 0;
+        } 
+
+         const percent = score / assignment.points_possible;
+ 
+ 
+    return result;
+    } catch (error) {
+      console.error("There was a problem:", error.message);
+      return [];
 }
+  }
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
-console.log(result);
+// const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+
+// console.log(result);
+
+
+
+
+
+
+
+
+
+// Your goal is to analyze and transform this data such that the output of your program 
+// is an array of objects, each containing the following information in the following format:
+
+
+// const result = [
+//     {
+//       id: 125,
+//       avg: 0.985, // (47 + 150) / (50 + 150)
+//       1: 0.94, // 47 / 50
+//       2: 1.0 // 150 / 150
+//     },
+//     {
+//       id: 132,
+//       avg: 0.82, // (39 + 125) / (50 + 150)
+//       1: 0.78, // 39 / 50
+//       2: 0.833 // late: (140 - 15) / 150
+//     }
+//   ];
